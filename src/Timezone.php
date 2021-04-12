@@ -3,24 +3,24 @@
 namespace JamesMills\LaravelTimezone;
 
 use Carbon\Carbon;
+use JamesMills\LaravelTimezone\Traits\TimezoneTrait;
 
-class Timezone
-{
+class Timezone {
+
+    use TimezoneTrait;
+
     /**
-     * @param  Carbon\Carbon|null  $date
+     * @param  Carbon|null  $date
      * @param  null  $format
      * @param  bool  $format_timezone
      * @return string
      */
-    public function convertToLocal(?Carbon $date, $format = null, $format_timezone = false) : string
-    {
+    public function convertToLocal(?Carbon $date, $format = null, $format_timezone = false): string {
         if (is_null($date)) {
             return 'Empty';
         }
 
-        $timezone = (auth()->user()->timezone) ?? config('app.timezone');
-
-        $date->setTimezone($timezone);
+        $date->setTimezone($this->getUserTimezone());
 
         if (is_null($format)) {
             return $date->format(config('timezone.format'));
@@ -37,19 +37,18 @@ class Timezone
 
     /**
      * @param $date
-     * @return Carbon\Carbon
+     * @return Carbon
      */
-    public function convertFromLocal($date) : Carbon
-    {
-        return Carbon::parse($date, auth()->user()->timezone)->setTimezone('UTC');
+    public function convertFromLocal($date): Carbon {
+        return Carbon::parse($date, auth()->user()->timezone)
+            ->setTimezone('UTC');
     }
 
     /**
-     * @param  Carbon\Carbon  $date
+     * @param  Carbon  $date
      * @return string
      */
-    private function formatTimezone(Carbon $date) : string
-    {
+    private function formatTimezone(Carbon $date): string {
         $timezone = $date->format('e');
         $parts = explode('/', $timezone);
 
