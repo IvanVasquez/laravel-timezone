@@ -16,7 +16,7 @@ This package listens for the `\Illuminate\Auth\Events\Login` event and will then
 
 This package uses the [torann/geoip](http://lyften.com/projects/laravel-geoip/doc/) package which looks up the users location based on their IP address. The package also returns information like the users currency and users timezone. [You can configure this package separately if you require](#custom-configuration).
 
- ## How to use
+## How to use
 
 You can show dates to your user in their timezone by using
 
@@ -41,7 +41,7 @@ composer require jamesmills/laravel-timezone
 ```
 
 Publish database migrations
- 
+
 ```
 php artisan vendor:publish --provider="JamesMills\LaravelTimezone\LaravelTimezoneServiceProvider" --tag=migrations
 ```
@@ -88,6 +88,28 @@ And with custom formatting
 @displayDate($post->created_at, 'Y-m-d g:i', true)
 
 // 2018-07-04 3:32 New York, America
+```
+
+### Using models casting class
+
+#### Basic usage
+
+```
+<?php
+namespace App;
+use Illuminate\Database\Eloquent\Model;
+use JamesMills\LaravelTimezone\Casts\Timezone;
+class Foo extends Model
+{
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => Timezone::class,
+    ];
+}
 ```
 
 ### Saving the users input to the database in UTC
